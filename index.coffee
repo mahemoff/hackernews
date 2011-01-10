@@ -11,5 +11,5 @@ setInterval show, 10*60*1000
 
 $(".story").live "click", (ev) -> 
   return if $(ev.target).closest("a").length
-  window.open($(".url", this).attr("href"), "hackernews"+Math.random());
+  window.open($(".url", this).attr("href"), "_blank");
 

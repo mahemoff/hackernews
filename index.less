@@ -14,7 +14,7 @@
 *****************************************************************************/
 
 @leftIndent: 1em;
-@commentsLinkPadding: 0.45;
+@commentsLinkPadding: 0.3;
 
 /*****************************************************************************
    GENERAL
@@ -69,13 +69,13 @@ h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-weight: nor
 
 .commentsLink,.commentsLink:visited {
   position: absolute; top: 50%; right: 1em; height: 1em;
-  margin-top: -0.5em - @commentsLinkPadding;
+  margin-top: -0.5em-@commentsLinkPadding;
   width: 7em; white-space: pre;
   color: #666;
 
   span {
     float: right;
-    padding: @commentsLinkPadding em;
+    padding: 0em + @commentsLinkPadding;
     border-radius: 0.3em;
   }
 
