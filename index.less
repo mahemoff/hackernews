@@ -1,0 +1,84 @@
+/*****************************************************************************
+   MACROS
+*****************************************************************************/
+.linearGradient(@color1:#ccc, @color2:#ddd) {
+  background-image:-webkit-gradient(linear, left bottom, left top, color-stop(0, @color1), color-stop(100%, @color2));
+  background-image:-moz-linear-gradient(center bottom, @color1 0, @color2 100%);
+  background-image:-o-linear-gradient(center bottom, @color1 0, @color2 100%);
+  background-image:linear-gradient(center bottom, @color1 0, @color2 100%);
+  background-color: @color1;
+}
+
+/*****************************************************************************
+   CONSTANTS
+*****************************************************************************/
+
+@leftIndent: 1em;
+@commentsLinkPadding: 0.45;
+
+/*****************************************************************************
+   GENERAL
+*****************************************************************************/
+
+* { margin: 0; padding: 0; }
+a,a:visited { color: #00b; text-decoration: none; }
+
+/*****************************************************************************
+   PAGE STRUCTURE
+*****************************************************************************/
+
+body { font-size:100%; }
+#header { line-height: 1.3em; }
+#header { background: #f90; margin: 0 0 1em; padding: 1em 10% 0.5em; }
+#header .wrapper { margin-left: @leftIndent; }
+h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-weight: normal; }
+#about { font-size: 0.75em; }
+#main { text-align: center; }
+
+/*****************************************************************************
+   STORIES
+*****************************************************************************/
+
+#stories {
+  list-style-type: none;
+  width: 80%;
+  margin: 0 auto 1em;
+  text-align: left;
+
+  a, a:visited { color: black; }
+
+}
+
+.story { 
+  padding: 0.5em 9em 0.5em @leftIndent;
+  border: 1px solid black;
+  border-bottom-width: 0;
+  background: #fff6f6;
+  cursor: pointer;
+  position: relative;
+
+  &:hover { .linearGradient(#fc0, #fa0); }
+
+  &:last-child { border-bottom-width: 1px; }
+
+}
+
+#stories a.url, #stories a.url:visited { color: #00b; }
+
+.postedAgo { font-size: 0.75em; white-space: pre; }
+
+.commentsLink,.commentsLink:visited {
+  position: absolute; top: 50%; right: 1em; height: 1em;
+  margin-top: -0.5em - @commentsLinkPadding;
+  width: 7em; white-space: pre;
+  color: #666;
+
+  span {
+    float: right;
+    padding: @commentsLinkPadding em;
+    border-radius: 0.3em;
+  }
+
+}
+
+.postedBy:hover, .commentsLink:hover span { .linearGradient(#fa0, #f80); }

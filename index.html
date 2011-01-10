@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+
+  <link href='http://fonts.googleapis.com/css?family=Josefin+Sans'
+        rel='stylesheet' type='text/css'>
+  <link rel="shortcut icon" href="images/h.jpg" />
+  <link rel="apple-itouch-icon" href="images/h114.jpg" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+
+  <link rel="stylesheet/less" href="index.less" type="text/css" />
+  <script src="lib/less-1.0.40.js"></script>
+
+</head>
+
+<body>
+
+  <div id="header">
+    <div class="wrapper">
+      <h1>Hacker News Reader</h1>
+      <div id="about">
+        <span>
+          Serverless app on
+            <a href="http://jashkenas.github.com/coffee-script/">CoffeeScript</a>,
+            <a href="https://github.com/cloudhead/less.js/">Less</a>,
+            <a href="http://jquery.com">jQuery</a>,
+            <a href="http://api.ihackernews.com/">iHackerNews API</a>,
+            <A href="http://news.ycombinator.com">HN</a>
+            <A href="http://mahemoff.com">Me</a>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div id="main">
+    <ul id="stories">
+    </ul>
+  </div>
+
+  <!-- POST-PAGE SCRIPTS -->
+
+  <script src="lib/jquery.min.js"></script>
+  <script src="lib/underscore.js"></script>
+  <script type="text/coffeescript" src="index.coffee"></script>
+  <script src="lib/coffee-script.js"></script>
+
+  <!-- TEMPLATES -->
+
+  <script id="storiesTemplate" type="template">
+    <% function rand() { return "hackerNews" + Math.random(); } %>
+    <% _.each(items, function(s) { %>
+      <li class="story">
+        <a target="<%= rand() %>" class="commentsLink" href="http://news.ycombinator.com/item?id=<%= s.id %>"><span><%= s.commentCount %> comments</span></a>
+        <a target="<%= rand() %>" class="url" href="<%= s.url %>" style="font-size:<%= Math.log(Math.log(Math.max(s.points,10))) %>em;" ><%= s.title %></a>
+        <span class="postAuxiliary"><span class="postedAgo"><%= s.postedAgo %> by <a target="<%= rand() %>" class="postedBy" href="http://news.ycombinator.com/user?id=<%= s.postedBy %>"><%= s.postedBy %></a></span>
+        </div>
+      </li>
+    <% }); %>
+  </script>
+
+</body>
+</html>
