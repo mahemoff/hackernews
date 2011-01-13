@@ -11,7 +11,6 @@
 
   <link rel="stylesheet/less" href="index.less" type="text/css" />
   <script src="lib/less-1.0.40.js"></script>
-
 </head>
 
 <body>
@@ -36,6 +35,7 @@
   <div id="main">
     <ul id="stories">
     </ul>
+    <iframe id="content" sandbox name="content"></iframe>
   </div>
 
   <!-- POST-PAGE SCRIPTS -->
@@ -44,14 +44,14 @@
   <script src="lib/underscore.js"></script>
   <script type="text/coffeescript" src="index.coffee"></script>
   <script src="lib/coffee-script.js"></script>
-
+  
   <!-- TEMPLATES -->
 
   <script id="storiesTemplate" type="template">
     <% _.each(items, function(s) { %>
       <li class="story">
         <a target="_blank" class="commentsLink" href="http://news.ycombinator.com/item?id=<%= s.id %>"><span><%= s.commentCount %> comments</span></a>
-        <a target="_blank" class="url" href="<%= s.url %>" style="font-size:<%= Math.log(Math.log(Math.max(s.points,10))) %>em;" ><%= s.title %></a>
+        <a target="content" class="url" href="<%= s.url %>" style="font-size:<%= Math.log(Math.log(Math.max(s.points,10))) %>em;" ><%= s.title %></a>
         <span class="postAuxiliary"><span class="postedAgo"><%= s.postedAgo %> by <a target="_blank" class="postedBy" href="http://news.ycombinator.com/user?id=<%= s.postedBy %>"><%= s.postedBy %></a></span>
         </div>
       </li>

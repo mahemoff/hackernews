@@ -41,12 +41,11 @@ h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-weight: nor
 
 #stories {
   list-style-type: none;
-  width: 80%;
   margin: 0 auto 1em;
   text-align: left;
 
   a, a:visited { color: black; }
-
+  float: left;
 }
 
 .story { 
@@ -56,11 +55,31 @@ h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-weight: nor
   background: #fff6f6;
   cursor: pointer;
   position: relative;
-
   &:hover { .linearGradient(#fc0, #fa0); }
+  &:last-child { border-bottom-width: 1px; }  
+}
 
-  &:last-child { border-bottom-width: 1px; }
+.story.selected {
+  background-color: red
+}
 
+iframe {
+  left: 100%;
+  width: 80%;
+  top: 0;
+  position: fixed;
+  height: 100%;
+  -webkit-transition: all 0.5s ease-in-out;
+  background-color: white;
+  border: none;
+}
+
+iframe[src^=http] {
+  left: 20%;
+}
+
+iframe.mid {
+  left: 60%;
 }
 
 #stories a.url, #stories a.url:visited { color: #00b; }

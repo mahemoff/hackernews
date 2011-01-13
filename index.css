@@ -1,0 +1,3 @@
+iframe[src=^http] {
+  left: 20%;
+}
