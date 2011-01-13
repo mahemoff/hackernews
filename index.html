@@ -26,16 +26,39 @@
             <a href="https://github.com/cloudhead/less.js/">Less</a>,
             <a href="http://jquery.com">jQuery</a>,
             <a href="http://api.ihackernews.com/">iHackerNews API</a>,
-            <A href="http://news.ycombinator.com">HN</a>
-            <A href="http://mahemoff.com">Me</a>
+            <a href="http://news.ycombinator.com">HN</a>,
+            <a href="http://mahemoff.com">Me</a>
         </span>
       </div>
     </div>
   </div>
 
   <div id="main">
+
+    <div id="settings">
+      <h2 class="toggle"><span>settings</span></h2>
+      <form id="instapaper">
+        <input placeholder="joe@example.com" name="username" />
+        <input placeholder="password" name="password" type="password" />
+        <button id="instapaperLogin">Login to Instapaper</button>
+        <span class="loginStatus">
+          <div class="pending">  
+            logging in ...
+          </div>
+          <div class="error">  
+            There seems to be a login problem.
+            Please check your username and password.
+          </div>
+          <div class="success">  
+            And you're in!
+          </div>
+        </span>
+      </form>
+    </div>
+
     <ul id="stories">
     </ul>
+
   </div>
 
   <!-- POST-PAGE SCRIPTS -->
@@ -50,7 +73,13 @@
   <script id="storiesTemplate" type="template">
     <% _.each(items, function(s) { %>
       <li class="story">
-        <a target="_blank" class="commentsLink" href="http://news.ycombinator.com/item?id=<%= s.id %>"><span><%= s.commentCount %> comments</span></a>
+        <a target="_blank" class="commentsLink"
+          href="http://news.ycombinator.com/item?id=<%= s.id %>"><span><%= s.commentCount %> comments</span></a>
+        <span class="readLaterStatus">
+          <span class="fresh">read&nbsp;later</span>
+          <span class="pending">saving&nbsp;...</span>
+          <span class="success">saved</span>
+        </span>
         <a target="_blank" class="url" href="<%= s.url %>" style="font-size:<%= Math.log(Math.log(Math.max(s.points,10))) %>em;" ><%= s.title %></a>
         <span class="postAuxiliary"><span class="postedAgo"><%= s.postedAgo %> by <a target="_blank" class="postedBy" href="http://news.ycombinator.com/user?id=<%= s.postedBy %>"><%= s.postedBy %></a></span>
         </div>

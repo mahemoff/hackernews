@@ -13,7 +13,9 @@
    CONSTANTS
 *****************************************************************************/
 
-@leftIndent: 1em;
+@storyBackground: #fff6f6;
+@mainIndent: 10%;
+@storyIndent: 1em;
 @commentsLinkPadding: 0.3;
 
 /*****************************************************************************
@@ -21,6 +23,7 @@
 *****************************************************************************/
 
 * { margin: 0; padding: 0; }
+h1,h2,h3,h4,h5,h6 { font-weight: normal; font-size: 1em; }
 a,a:visited { color: #00b; text-decoration: none; }
 
 /*****************************************************************************
@@ -29,11 +32,22 @@ a,a:visited { color: #00b; text-decoration: none; }
 
 body { font-size:100%; }
 #header { line-height: 1.3em; }
-#header { background: #f90; margin: 0 0 1em; padding: 1em 10% 0.5em; }
-#header .wrapper { margin-left: @leftIndent; }
-h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-weight: normal; }
+#header { background: #f90; margin: 0 0 1em; padding: 1em @mainIndent 0.5em; }
+#header .wrapper { margin-left: @storyIndent; }
+h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-size: 2em; }
 #about { font-size: 0.75em; }
 #main { text-align: center; }
+#main > * {
+  text-align: left; width: 100%-2*@mainIndent; margin: 0 10% 1em;
+}
+
+/*****************************************************************************
+   SETTINGS
+*****************************************************************************/
+
+#settings { padding-left: @storyIndent; }
+#settings input { width: 10em; }
+#settings button { padding: 0 1em; }
 
 /*****************************************************************************
    STORIES
@@ -41,19 +55,16 @@ h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-weight: nor
 
 #stories {
   list-style-type: none;
-  width: 80%;
-  margin: 0 auto 1em;
   text-align: left;
 
   a, a:visited { color: black; }
-
+  background: @storyBackground
 }
 
 .story { 
-  padding: 0.5em 9em 0.5em @leftIndent;
+  padding: 0.5em 14em 0.5em @storyIndent;
   border: 1px solid black;
   border-bottom-width: 0;
-  background: #fff6f6;
   cursor: pointer;
   position: relative;
 
@@ -67,9 +78,17 @@ h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-weight: nor
 
 .postedAgo { font-size: 0.75em; white-space: pre; }
 
+.readLaterStatus { width: 5em; overflow: hidden;
+   position: absolute; top: 50%; right: 6em; height: 100%;
+   margin-top: -0.5em;
+}
+
+.readLaterStatus span { float: left; }
+.readLaterStatus .success { background: #bbb; }
+
 .commentsLink,.commentsLink:visited {
-  position: absolute; top: 50%; right: 1em; height: 1em;
-  margin-top: -0.5em-@commentsLinkPadding;
+  position: absolute; top: 50%; right: 1em; height: 100%;
+  margin-top: -0.5em;
   width: 7em; white-space: pre;
   color: #666;
 
@@ -81,4 +100,10 @@ h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-weight: nor
 
 }
 
-.postedBy:hover, .commentsLink:hover span { .linearGradient(#fa0, #f80); }
+.url:hover, .postedBy:hover, .readLaterStatus:hover span, .commentsLink:hover span { text-decoration: underline; }
+
+.error   { color: red; display: none; }
+.success { color: green; display: none; }
+.pending { display: none; }
+.toggle span { color: #00b; text-decoration: underline; cursor: pointer; }
+.toggle + form { display: none; }
