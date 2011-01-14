@@ -16,7 +16,6 @@
 @storyBackground: #fff6f6;
 @mainIndent: 10%;
 @storyIndent: 1em;
-@commentsLinkPadding: 0.3;
 
 /*****************************************************************************
    GENERAL
@@ -25,6 +24,7 @@
 * { margin: 0; padding: 0; }
 h1,h2,h3,h4,h5,h6 { font-weight: normal; font-size: 1em; }
 a,a:visited { color: #00b; text-decoration: none; }
+td { padding: 0 0.2em; }
 
 /*****************************************************************************
    PAGE STRUCTURE
@@ -57,12 +57,11 @@ h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-size: 2em; 
   list-style-type: none;
   text-align: left;
 
-  a, a:visited { color: black; }
-  background: @storyBackground
+  background: @storyBackground;
+  border-collapse: collapse;
 }
 
 .story { 
-  padding: 0.5em 14em 0.5em @storyIndent;
   border: 1px solid black;
   border-bottom-width: 0;
   cursor: pointer;
@@ -72,35 +71,46 @@ h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-size: 2em; 
 
   &:last-child { border-bottom-width: 1px; }
 
-}
+  .url { padding: 0.2em @storyIndent; }
 
-#stories a.url, #stories a.url:visited { color: #00b; }
+}
 
 .postedAgo { font-size: 0.75em; white-space: pre; }
 
-.readLaterStatus { width: 5em; overflow: hidden;
-   position: absolute; top: 50%; right: 6em; height: 100%;
-   margin-top: -0.5em;
+.readLaterStatus { 
+
+  width: 5em;
+  overflow: hidden;
+
+  opacity: 0.3; &:hover { opacity: 1; }
+
+  span {
+    text-align: center;
+    float: left;
+    width: 70%;
+    font-size: 0.7m; color: #666;
+    border: 1px solid #999; border-radius: 0.5em;
+    padding: 0 0.5em;
+    &:hover { background: #999; color: white; }
+    white-space: pre;
+  }
+
+  .success { background: #bbb; }
+
 }
-
-.readLaterStatus span { float: left; }
-.readLaterStatus .success { background: #bbb; }
-
 .commentsLink,.commentsLink:visited {
-  position: absolute; top: 50%; right: 1em; height: 100%;
-  margin-top: -0.5em;
-  width: 7em; white-space: pre;
+  width: 1px;
+  text-align: right;
+  white-space: pre;
   color: #666;
 
   span {
-    float: right;
-    padding: 0em + @commentsLinkPadding;
     border-radius: 0.3em;
   }
 
 }
 
-.url:hover, .postedBy:hover, .readLaterStatus:hover span, .commentsLink:hover span { text-decoration: underline; }
+.url a:hover, .postedBy:hover, .commentsLink:hover span { text-decoration: underline; }
 
 .error   { color: red; display: none; }
 .success { color: green; display: none; }

@@ -21,11 +21,11 @@ $(".story").live "click", (ev) ->
 $(".readLaterStatus").live "click", (ev) -> 
   $(".pending", readLaterStatus = this).radio()
   $.getJSON "https://www.instapaper.com/api/add?jsonp=?",
-    $("#instapaper").serialize()+"&url="+$(this).siblings(".url").attr("href").replace(":","%3a").replace(/\//g, "%2f"),
+    $("#instapaper").serialize()+"&url="+$(this).closest(".story").find(".url a").attr("href").replace(":","%3a").replace(/\//g, "%2f"),
     (response) ->
+      console.log("success")
       $(".success", readLaterStatus).radio();
   return false
-
   
 $("#instapaperLogin").click () ->
   $("#instapaper .pending").show();

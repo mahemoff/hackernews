@@ -56,8 +56,7 @@
       </form>
     </div>
 
-    <ul id="stories">
-    </ul>
+    <table id="stories"></table>
 
   </div>
 
@@ -72,18 +71,26 @@
 
   <script id="storiesTemplate" type="template">
     <% _.each(items, function(s) { %>
-      <li class="story">
-        <a target="_blank" class="commentsLink"
-          href="http://news.ycombinator.com/item?id=<%= s.id %>"><span><%= s.commentCount %> comments</span></a>
-        <span class="readLaterStatus">
-          <span class="fresh">read&nbsp;later</span>
-          <span class="pending">saving&nbsp;...</span>
+
+      <tr class="story">
+
+        <td class="url">
+          <a target="_blank" href="<%= s.url %>" style="font-size:<%= Math.log(Math.log(Math.max(s.points,10))) %>em;" ><%= s.title %></a>
+          <span class="postAuxiliary"><span class="postedAgo"><%= s.postedAgo %> by <a target="_blank" class="postedBy" href="http://news.ycombinator.com/user?id=<%= s.postedBy %>"><%= s.postedBy %></a></span>
+        </td>
+
+        <td class="commentsLink">
+          <a target="_blank" href="http://news.ycombinator.com/item?id=<%= s.id %>"><span><%= s.commentCount %> comments</span></a>
+        </td>
+
+        <td class="readLaterStatus">
+          <span class="fresh">read later</span>
+          <span class="pending">saving ...</span>
           <span class="success">saved</span>
-        </span>
-        <a target="_blank" class="url" href="<%= s.url %>" style="font-size:<%= Math.log(Math.log(Math.max(s.points,10))) %>em;" ><%= s.title %></a>
-        <span class="postAuxiliary"><span class="postedAgo"><%= s.postedAgo %> by <a target="_blank" class="postedBy" href="http://news.ycombinator.com/user?id=<%= s.postedBy %>"><%= s.postedBy %></a></span>
-        </div>
-      </li>
+        </td>
+
+      </tr>
+
     <% }); %>
   </script>
 
