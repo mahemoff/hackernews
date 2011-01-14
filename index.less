@@ -66,13 +66,93 @@ h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-size: 2em; 
   border-bottom-width: 0;
   cursor: pointer;
   position: relative;
+  &:hover { 
+    .linearGradient(#fc0, #fa0);
+  }
+  -webkit-transition: all 0.2s ease-in-out;
+  &:last-child { border-bottom-width: 1px; }  
+}
 
-  &:hover { .linearGradient(#fc0, #fa0); }
+.story.selected {
+  background-color: red;
+}
 
-  &:last-child { border-bottom-width: 1px; }
 
-  .url { padding: 0.2em @storyIndent; }
 
+#content {
+  left: 100%;
+  width: 80%;
+  top: 0;
+  position: fixed;
+  height: 100%;
+  -webkit-transition: left,opacity 0.3s,0.3s ease-in-out,ease-in-out;
+  background-color: white;
+  border: none;
+  opacity: 0;
+  margin: 10px 0 -10px 0;
+  padding: 50px 0 0 0;
+}
+
+#content[src^=http] {
+  left: 20%;
+  opacity: 1;
+  -webkit-box-shadow: 0px 0px 20px #000;
+}
+
+#content_container {
+  left: 100%;
+  width: 80%;
+  top: 10px;
+  height: 50px;
+  position: fixed;
+  -webkit-transition: left,opacity 0.3s,0.3s ease-in-out,ease-in-out;
+  background-color: white;
+  border: none;
+  opacity: 0;
+  text-align: left;
+}
+
+#content[src^=http] + #content_container {
+  left: 20%;
+  opacity: 1;
+}
+
+#content.mid {
+  left: 60%;
+  opacity: 1;
+  -webkit-box-shadow: 0px 0px 20px #000;
+}
+
+#content.mid + #content_container {
+  left: 60%;
+  opacity: 1;
+  -webkit-box-shadow: 0px 0px 20px #000;
+}
+
+#comments {
+  left: 100%;
+  width: 50%;
+  top: 65px;
+  position: fixed;
+  height: 100%;
+  -webkit-transition: left,opacity 0.3s,0.3s ease-in-out,ease-in-out;
+  background-color: white;
+  border: none;
+  opacity: 0;
+}
+
+#comments[src^=http] {
+  left: 50%;
+  opacity: 1;
+  -webkit-box-shadow: 0px 0px 20px #000;
+}
+
+.url { padding: 0.2em @storyIndent; }
+
+#comments.mid {
+  left: 70%;
+  opacity: 1;
+  -webkit-box-shadow: 0px 0px 20px #000;
 }
 
 .postedAgo { font-size: 0.75em; white-space: pre; }

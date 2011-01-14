@@ -11,7 +11,6 @@
 
   <link rel="stylesheet/less" href="index.less" type="text/css" />
   <script src="lib/less-1.0.40.js"></script>
-
 </head>
 
 <body>
@@ -62,6 +61,13 @@
 
     <table id="stories"></table>
 
+      <iframe id="content" sandbox name="content"></iframe>
+      <div id="content_container">
+        {{ Controls Will Go here.}}
+      </div>
+      <iframe id="comments" sandbox name="comments"></iframe>
+    </div>
+
   </div>
 
   <!-- POST-PAGE SCRIPTS -->
@@ -71,8 +77,6 @@
   <script type="text/coffeescript" src="index.coffee"></script>
   <script src="lib/coffee-script.js"></script>
   <script src="http://platform.twitter.com/anywhere.js?id=HQdhAp7xaImuZvaV1WaCtg&v=1" type="text/javascript"></script>
-
-  <!-- TEMPLATES -->
 
   <script id="storiesTemplate" type="template">
     <% _.each(items, function(s) { %>
