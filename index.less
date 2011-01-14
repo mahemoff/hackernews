@@ -60,26 +60,56 @@ h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-weight: nor
 }
 
 .story.selected {
-  background-color: red
+  background-color: red;
 }
 
-iframe {
+#content {
   left: 100%;
   width: 80%;
   top: 0;
   position: fixed;
   height: 100%;
-  -webkit-transition: all 0.5s ease-in-out;
+  -webkit-transition: left,opacity 0.3s ease-in-out;
   background-color: white;
   border: none;
+  opacity: 0;
+  
 }
 
-iframe[src^=http] {
+#content[src^=http] {
   left: 20%;
+  opacity: 1;
+  -webkit-box-shadow: 0px 0px 20px #000;
 }
 
-iframe.mid {
+#content.mid {
   left: 60%;
+  opacity: 1;
+  -webkit-box-shadow: 0px 0px 20px #000;
+}
+
+#comments {
+  left: 100%;
+  width: 50%;
+  top: 0;
+  position: fixed;
+  height: 100%;
+  -webkit-transition: left,opacity 0.3s,0.3s ease-in-out,ease-in-out;
+  background-color: white;
+  border: none;
+  opacity: 0;
+}
+
+#comments[src^=http] {
+  left: 50%;
+  opacity: 1;
+  -webkit-box-shadow: 0px 0px 20px #000;
+}
+
+#comments.mid {
+  left: 70%;
+  opacity: 1;
+  -webkit-box-shadow: 0px 0px 20px #000;
 }
 
 #stories a.url, #stories a.url:visited { color: #00b; }

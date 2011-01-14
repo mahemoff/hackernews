@@ -25,21 +25,34 @@ $(".story").live "click", (ev) ->
   iframe.attr("src", url.attr("href"))
   
 funcMap =
-  "27": (iframe) ->
-    iframe.removeClass "mid"
-    iframe.attr("src", "") 
+  "13": ($content, $comments) ->
+    $comments.attr("src", $(".commentsLink", selected).attr("href"))
     
-  "74": (iframe) ->
+  "27": ($content, $comments) ->
+    if $comments.attr("src") isnt ""
+      $comments.removeClass "mid"
+      $comments.attr("src", "")
+    else
+      $content.removeClass "mid"
+      $content.attr("src", "") 
+    
+  "75": ($content, $comments) ->
     return if not selected?
     
     selected.removeClass "selected"
     selected = selected.prev()
+    
+    selected = null if selected.length is 0
+    
     selected.addClass "selected"
     
-    iframe.attr("src", $(".url", selected).attr("href"))
-    iframe.removeClass "mid"
+    $content.attr("src", $(".url", selected).attr("href"))
+    $content.removeClass "mid"
     
-  "75": (iframe) ->
+    $comments.removeClass "mid"
+    
+    
+  "74": ($content, $comments) ->
     console.log selected
     
     if not selected?
@@ -47,17 +60,25 @@ funcMap =
     else
       selected.removeClass "selected"
       selected = selected.next()
-    console.log selected
+      
     selected.addClass "selected"
     
-    iframe.attr("src", $(".url", selected).attr("href"))
-    iframe.removeClass "mid"
+    $content.attr("src", $(".url", selected).attr("href"))
+    $content.removeClass "mid"
+    
+    $comments.removeClass "mid"
     
 $(window).bind "keyup", (ev) ->
-  iframe = $("#content")
+  $content = $ "#content"
+  $comments = $ "#comments"
   
-  funcMap[ev.keyCode](iframe) if funcMap[ev.keyCode]?
+  console.log ev.keyCode
+  
+  funcMap[ev.keyCode]($content, $comments) if funcMap[ev.keyCode]?
 
 $(window).bind "scroll", (ev) ->
-  iframe = $("#content")
-  iframe.addClass("mid") if iframe.hasClass ""
+  $content = $ "#content"
+  $comments = $ "#comments"
+  $content.addClass("mid") if $content.hasClass "" and $content.attr("src") is ""
+  $comments.addClass("mid") if $comments.hasClass "" and $comments.attr("src") is ""
+  
