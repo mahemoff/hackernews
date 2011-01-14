@@ -40,8 +40,19 @@ $(".toggle span").click () ->
   $(this).parent().next().slideToggle()
 
 /*****************************************************************************/
+# TWITTER
+
+showTweet = (story, url)
+  twttr.anywhere (T) -> T("#tweetBox").tweetBox(
+    label: "Tweet the story",
+    defaultContent: "A good story that one"
+  )
+
+/*****************************************************************************/
 # GENERIC
 
 $.fn.radio = () -> $(this).show().siblings().hide()
 
 $.exclusive = (cond, $a, $b) -> if cond then $a.radio() else $b.radio()
+
+
