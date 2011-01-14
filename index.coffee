@@ -1,5 +1,6 @@
-/****************************************************************************/
+###############################################################################
 # LOAD STORIES
+###############################################################################
 
 storiesTemplate = _.template($("#storiesTemplate").html())
 show = () ->
@@ -15,8 +16,9 @@ $(".url").live "click", (ev) ->
 show()
 setInterval show, 10*60*1000
 
-/****************************************************************************/
+###############################################################################
 # SHOW CONTENT AND COMMENTS
+###############################################################################
 
 $content = $("#content")
 $comments = $("#comments")
@@ -67,8 +69,9 @@ $(window).bind "clearStory", (ev, $story) ->
 $(window).bind "clearComments", (ev, $story) ->
   $comments.removeClass(".mid").removeAttr("src")
 
-/*****************************************************************************/
+###############################################################################
 # INSTAPAPER
+###############################################################################
 
 $("#instapaperLogin").click () ->
   $("#instapaper .pending").show();
@@ -81,22 +84,26 @@ $("#instapaperLogin").click () ->
 
 $(".readLaterStatus").live "click", (ev) -> 
   $(".pending", readLaterStatus = this).radio()
+  console.log("add", this, $(this).closest(".story"))
   $.getJSON "https://www.instapaper.com/api/add?jsonp=?",
-    $("#instapaper").serialize()+"&url="+$(this).closest(".story").find(".url a").attr("href").replace(":","%3a").replace(/\//g, "%2f"),
+    $("#instapaper").serialize()+
+    "&url="+escapeURL($(this).closest(".story").find(".url a").attr("href"))
     (response) ->
       $(".success", readLaterStatus).radio();
   return false
 
-/*****************************************************************************/
+###############################################################################
 # TWITTER
+###############################################################################
 
 twttr.anywhere (T) -> T("#tweetBox").tweetBox(
   label: "Tweet the story",
   defaultContent: "A good story that one"
 )
 
-/*****************************************************************************/
+###############################################################################
 # GENERIC
+###############################################################################
 
 $.fn.radio = () -> $(this).show().siblings().hide()
 $.fn.radioClass = (className) ->
@@ -105,3 +112,4 @@ $.fn.radioClass = (className) ->
 $.exclusive = (cond, $a, $b) -> if cond then $a.radio() else $b.radio()
 $(".toggle span").click () -> $(this).parent().next().slideToggle()
 $.fn.src = (url) -> $(this).attr("src", url) unless $(this).attr("src")==url
+escapeURL = (s) -> s.replace(":","%3a").replace(/\//g, "%2f")
