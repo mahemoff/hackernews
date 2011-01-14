@@ -33,6 +33,7 @@ $(".story").live "click", (ev) ->
   
 funcMap =
   "13": ($content, $comments) ->
+    $content.attr("src", $(".url", selected).attr("href"))
     $comments.attr("src", $(".commentsLink", selected).attr("href"))
     
   "27": ($content, $comments) ->
@@ -95,7 +96,6 @@ $(window).bind "scroll", (ev) ->
   console.log($content.attr("src"))
   console.log($comments.attr("src"))
   
-  
-  $content.addClass("mid") if $content.hasClass "" and $content.attr("src") 
-  $comments.addClass("mid") if $comments.hasClass "" and $comments.attr("src")? 
+  $content.addClass("mid") if $content.attr("src")
+  $comments.addClass("mid") if $comments.attr("src")? and $content.attr("src")
   
