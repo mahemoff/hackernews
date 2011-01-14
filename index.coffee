@@ -13,16 +13,23 @@ selected = null
 
 $(".story").live "click", (ev) -> 
   return if $(ev.target).closest("a").length
-  iframe = $("#content")
-  iframe.removeClass("mid")
+  $iframe = $("#content")
+  $iframe.removeClass("mid")
+  
+  $comments = $("#comments")
   
   url = $(".url", this)
+  
+  selected.removeClass "selected" if selected? 
   selected = url.parents(".story")
   
   selected.addClass "selected"
   
-  iframe.removeClass "none"
-  iframe.attr("src", url.attr("href"))
+  $iframe.removeClass "none"
+  $iframe.attr("src", url.attr("href"))
+  
+  if $comments.attr("src")? and $comments.attr("src") isnt ""
+    $comments.attr("src", $(".commentsLink", selected).attr("href"))
   
 funcMap =
   "13": ($content, $comments) ->
@@ -51,6 +58,8 @@ funcMap =
     
     $comments.removeClass "mid"
     
+    if $comments.attr("src")? and $comments.attr("src") isnt ""
+      $comments.attr("src", $(".commentsLink", selected).attr("href"))
     
   "74": ($content, $comments) ->
     console.log selected
@@ -68,6 +77,9 @@ funcMap =
     
     $comments.removeClass "mid"
     
+    if $comments.attr("src")? and $comments.attr("src") isnt ""
+      $comments.attr("src", $(".commentsLink", selected).attr("href"))
+    
 $(window).bind "keyup", (ev) ->
   $content = $ "#content"
   $comments = $ "#comments"
@@ -79,6 +91,11 @@ $(window).bind "keyup", (ev) ->
 $(window).bind "scroll", (ev) ->
   $content = $ "#content"
   $comments = $ "#comments"
-  $content.addClass("mid") if $content.hasClass "" and $content.attr("src") is ""
-  $comments.addClass("mid") if $comments.hasClass "" and $comments.attr("src") is ""
+  
+  console.log($content.attr("src"))
+  console.log($comments.attr("src"))
+  
+  
+  $content.addClass("mid") if $content.hasClass "" and $content.attr("src") 
+  $comments.addClass("mid") if $comments.hasClass "" and $comments.attr("src")? 
   
