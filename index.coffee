@@ -1,5 +1,5 @@
 /****************************************************************************/
-# STORIES
+# LOAD STORIES
 
 storiesTemplate = _.template($("#storiesTemplate").html())
 show = () ->
@@ -8,57 +8,64 @@ show = () ->
       $(this).html(storiesTemplate(storyInfo))
       $(this).fadeIn()
 
+$(".url").live "click", (ev) ->
+  $(window).trigger "selectStory", [$(this).closest(".story")]
+  ev.preventDefault()
+
 show()
 setInterval show, 10*60*1000
 
-selected = null
+/****************************************************************************/
+# SHOW CONTENT AND COMMENTS
 
-$(".story").live "click", (ev) -> 
-  return if $(ev.target).closest("a").length
-  $iframe = $("#content").removeClass("mid")
-  $(this).radioClass(".selected")
-  $iframe.attr("src", $(".url a", this).attr("href"))
-  if ($comments = $("#comments")).attr("src")?
-    $comments.attr("src", $(".commentsLink a", selected).attr("href"))
-  
+$content = $("#content")
+$comments = $("#comments")
+
+$(".story").live "click", (ev) -> $(window).trigger "selectStory", [$(this)]
+ 
 keyBindings =
-  13: ($content, $comments) -> # ENTER
-    $content.attr("src", $(".selected .url a").attr("href"))
-    $comments.attr("src", $(".selected .commentsLink a").attr("href"))
+  13: () ->
+    ev = if $("#content").attr("src")? then "selectComments" else "selectStory"
+    $(window).trigger ev, [$(".selected")]
 
-  27: ($content, $comments) -> # ESCAPE
-    if $comments.attr("src")?
-      $comments.removeClass("mid").removeAttr("src")
-    else
-      $content.removeClass("mid").removeAttr("src")
+  27: () -> # ESCAPE
+    ev = if $comments.attr("src")? then "clearComments" else "clearStory"
+    $(window).trigger ev
 
-  74: ($content, $comments) -> # j==DOWN
-    $selected =
-      if $(".selected").length then $(".selected").next() else $(".story").eq(0)
-    $selected.radioClass("selected") 
-    $content.attr("src", $(".selected .url a").attr("href"))
-    $content.add($comments).removeClass "mid"
-    if $comments.attr("src")?
-      $comments.attr("src", $(".selected .commentsLink a").attr("href"))
+  74: () -> # j==DOWN
+    $(window).trigger "selectStory", 
+     [if $(".selected").length then $(".selected").next() else $(".story").eq(0)]
 
-   75: ($content, $comments) -> # k==UP
-    return unless $(".selected").length
-    $(".selected").removeClass("selected").prev().addClass("selected")
-    $content.attr("src", $(".selected .url a").attr("href"))
-    $content.add($comments).removeClass "mid"
-    if $comments.attr("src")?
-      $comments.attr("src", $(".commentsLink a", selected).attr("href"))
-    
+   75: () -> $(window).trigger "selectStory", [$(".selected").prev()]
+
+   
 $(window).bind "keydown", (ev) ->
-  $content = $ "#content"
-  $comments = $ "#comments"
   keyBindings[ev.keyCode]($content, $comments) if keyBindings[ev.keyCode]?
 
 $(window).bind "scroll", (ev) ->
-  $content = $ "#content"
-  $comments = $ "#comments"
+  # TODO custom event
   $content.addClass("mid") if $content.attr("src")
   $comments.addClass("mid") if $comments.attr("src")? and $content.attr("src")
+
+$(window).bind "selectStory", (ev, $story, ensureComments) ->
+  $(".selected").removeClass("selected")
+  if $story and $story.length
+    $story.addClass("selected")
+    $content.src $(".selected .url a").attr("href")
+    $(".mid").removeClass(".mid")
+    if ensureComments or $comments.attr("src")?
+      $comments.src $(".selected .commentsLink a").attr("href")
+  else
+    $content.removeAttr("src")
+
+$(window).bind "selectComments", (ev, $story) ->
+  $(window).trigger("selectStory", [$story, true]) # always require story
+
+$(window).bind "clearStory", (ev, $story) ->
+  $content.removeClass(".mid").removeAttr("src")
+
+$(window).bind "clearComments", (ev, $story) ->
+  $comments.removeClass(".mid").removeAttr("src")
 
 /*****************************************************************************/
 # INSTAPAPER
@@ -77,7 +84,6 @@ $(".readLaterStatus").live "click", (ev) ->
   $.getJSON "https://www.instapaper.com/api/add?jsonp=?",
     $("#instapaper").serialize()+"&url="+$(this).closest(".story").find(".url a").attr("href").replace(":","%3a").replace(/\//g, "%2f"),
     (response) ->
-      console.log("success")
       $(".success", readLaterStatus).radio();
   return false
 
@@ -97,7 +103,5 @@ $.fn.radioClass = (className) ->
   $(this).addClass(className).siblings().removeClass(className)
 
 $.exclusive = (cond, $a, $b) -> if cond then $a.radio() else $b.radio()
-
-$(".toggle span").click () ->
-  $(this).parent().next().slideToggle()
-
+$(".toggle span").click () -> $(this).parent().next().slideToggle()
+$.fn.src = (url) -> $(this).attr("src", url) unless $(this).attr("src")==url
