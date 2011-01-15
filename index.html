@@ -20,7 +20,7 @@
       <h1>Hacker News Reader</h1>
       <div id="about">
         <span>
-          Serverless app on
+          Experimental serverless app on
             <a href="http://jashkenas.github.com/coffee-script/">CoffeeScript</a>,
             <a href="https://github.com/cloudhead/less.js/">Less</a>,
             <a href="http://jquery.com">jQuery</a>,
@@ -61,14 +61,11 @@
 
     <table id="stories"></table>
 
-      <iframe id="content" sandbox name="content"></iframe>
-      <div id="content_container">
-        {{ Controls Will Go here.}}
-      </div>
-      <iframe id="comments" sandbox name="comments"></iframe>
-    </div>
-
   </div>
+
+  <iframe id="content" sandbox name="content"></iframe>
+  <div id="contentPanel">{{ Controls Will Go here.}}</div>
+  <iframe id="comments" sandbox name="comments"></iframe>
 
   <!-- POST-PAGE SCRIPTS -->
 

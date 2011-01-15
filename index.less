@@ -9,13 +9,24 @@
   background-color: @color1;
 }
 
+.fixed(@top:0, @left:0, @height:100%, @width:100%) {
+  position: fixed;
+  top: @top; left: @left; height: @height; width: @width;
+}
+
 /*****************************************************************************
    CONSTANTS
 *****************************************************************************/
 
-@storyBackground: #fff6f6;
-@mainIndent: 10%;
+@mainIndent: 2%;
 @storyIndent: 1em;
+
+@contentTop: 10px;
+@contentPanelHeight: 50px;
+@contentWidth: 90%;
+@contentDiminishedWidth: 40%;
+
+@commentsWidth: 60%;
 
 /*****************************************************************************
    GENERAL
@@ -38,7 +49,7 @@ h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-size: 2em; 
 #about { font-size: 0.75em; }
 #main { text-align: center; }
 #main > * {
-  text-align: left; width: 100%-2*@mainIndent; margin: 0 10% 1em;
+  text-align: left; width: 100%-2*@mainIndent; margin: 0 auto 1em;
 }
 
 /*****************************************************************************
@@ -54,108 +65,39 @@ h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-size: 2em; 
 *****************************************************************************/
 
 #stories {
-  list-style-type: none;
-  text-align: left;
-
-  background: @storyBackground;
+  background: #fff6f6;
   border-collapse: collapse;
 }
 
 .story { 
   border: 1px solid black;
-  border-bottom-width: 0;
+  border-bottom-width: 0; &:last-child { border-bottom-width: 1px; }
   cursor: pointer;
-  position: relative;
-  &:hover { 
-    .linearGradient(#fc0, #fa0);
-  }
+  &:hover { .linearGradient(#fc0, #fa0); }
+  &.selected { background-color: red; }
   -webkit-transition: all 0.2s ease-in-out;
-  &:last-child { border-bottom-width: 1px; }  
+
+  .url { 
+    padding: 0.2em @storyIndent;
+  }
+
+  .commentsLink,.commentsLink:visited {
+    width: 1px;
+    text-align: right;
+    white-space: pre;
+    color: #666;
+
+    span {
+      border-radius: 0.3em;
+    }
+
+  }
+
+  .postedAgo { font-size: 0.75em; white-space: pre; }
+
+  .url a:hover, .postedBy:hover, .commentsLink:hover span { text-decoration: underline; }
+
 }
-
-.story.selected {
-  background-color: red;
-}
-
-
-
-#content {
-  left: 100%;
-  width: 80%;
-  top: 0;
-  position: fixed;
-  height: 100%;
-  -webkit-transition: left,opacity 0.3s,0.3s ease-in-out,ease-in-out;
-  background-color: white;
-  border: none;
-  opacity: 0;
-  margin: 10px 0 -10px 0;
-  padding: 50px 0 0 0;
-}
-
-#content[src^=http] {
-  left: 20%;
-  opacity: 1;
-  -webkit-box-shadow: 0px 0px 20px #000;
-}
-
-#content_container {
-  left: 100%;
-  width: 80%;
-  top: 10px;
-  height: 50px;
-  position: fixed;
-  -webkit-transition: left,opacity 0.3s,0.3s ease-in-out,ease-in-out;
-  background-color: white;
-  border: none;
-  opacity: 0;
-  text-align: left;
-}
-
-#content[src^=http] + #content_container {
-  left: 20%;
-  opacity: 1;
-}
-
-#content.mid {
-  left: 60%;
-  opacity: 1;
-  -webkit-box-shadow: 0px 0px 20px #000;
-}
-
-#content.mid + #content_container {
-  left: 60%;
-  opacity: 1;
-  -webkit-box-shadow: 0px 0px 20px #000;
-}
-
-#comments {
-  left: 100%;
-  width: 50%;
-  top: 65px;
-  position: fixed;
-  height: 100%;
-  -webkit-transition: left,opacity 0.3s,0.3s ease-in-out,ease-in-out;
-  background-color: white;
-  border: none;
-  opacity: 0;
-}
-
-#comments[src^=http] {
-  left: 50%;
-  opacity: 1;
-  -webkit-box-shadow: 0px 0px 20px #000;
-}
-
-.url { padding: 0.2em @storyIndent; }
-
-#comments.mid {
-  left: 70%;
-  opacity: 1;
-  -webkit-box-shadow: 0px 0px 20px #000;
-}
-
-.postedAgo { font-size: 0.75em; white-space: pre; }
 
 .readLaterStatus { 
 
@@ -178,19 +120,42 @@ h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-size: 2em; 
   .success { background: #bbb; }
 
 }
-.commentsLink,.commentsLink:visited {
-  width: 1px;
-  text-align: right;
-  white-space: pre;
-  color: #666;
 
-  span {
-    border-radius: 0.3em;
-  }
+/*****************************************************************************
+  CONTENT AND COMMENTS
+*****************************************************************************/
 
+#content, #contentPanel {
+  .fixed(0, 100%, 100%, @contentWidth);
+  -webkit-transition: left 0.3s ease-in-out;
+  background: white;
 }
 
-.url a:hover, .postedBy:hover, .commentsLink:hover span { text-decoration: underline; }
+#contentPanel { .fixed(@contentTop, 100%, @contentPanelHeight, @contentWidth); }
+#content { .fixed(@contentTop+@contentPanelHeight, 100%, 100%, @contentWidth); }
+
+#content[src^=http], #content[src^=http] + #contentPanel {
+  left: 100-@contentWidth;
+  -webkit-box-shadow: 0px 0px 20px #000;
+}
+
+#content.diminished, #content.diminished + #contentPanel {
+  .fixed(@contentTop, 100-@contentDiminishedWidth,
+         @contentPanelHeight, @contentWidth);
+  -webkit-transition: left 0.3s ease-in-out;
+  background: white;
+}
+
+#comments {
+  .fixed(65px, 100%, 100%, @commentsWidth);
+  -webkit-transition: left 0.3s ease-in-out;
+  background-color: white;
+}
+
+#comments[src^=http] {
+  left: 100-@commentsWidth;
+  -webkit-box-shadow: 0px 0px 20px #000;
+}
 
 .error   { color: red; display: none; }
 .success { color: green; display: none; }

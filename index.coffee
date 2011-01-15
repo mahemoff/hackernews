@@ -23,6 +23,8 @@ setInterval show, 10*60*1000
 $content = $("#content")
 $comments = $("#comments")
 
+# RESPOND TO UI EVENTS WITH SEMANTIC EVENTS
+
 $(".story").live "click", (ev) -> $(window).trigger "selectStory", [$(this)]
  
 keyBindings =
@@ -39,15 +41,16 @@ keyBindings =
      [if $(".selected").length then $(".selected").next() else $(".story").eq(0)]
 
    75: () -> $(window).trigger "selectStory", [$(".selected").prev()]
-
    
 $(window).bind "keydown", (ev) ->
   keyBindings[ev.keyCode]($content, $comments) if keyBindings[ev.keyCode]?
 
-$(window).bind "scroll", (ev) ->
-  # TODO custom event
-  $content.addClass("mid") if $content.attr("src")
-  $comments.addClass("mid") if $comments.attr("src")? and $content.attr("src")
+$(window).click (ev) -> $(window).trigger "clearStory"
+
+# Not handled right now
+# $(window).bind "scroll", (ev) -> $(window).trigger "clearStory"
+
+# HANDLE SEMANTIC EVENTS
 
 $(window).bind "selectStory", (ev, $story, ensureComments) ->
   $(".selected").removeClass("selected")
@@ -64,10 +67,11 @@ $(window).bind "selectComments", (ev, $story) ->
   $(window).trigger("selectStory", [$story, true]) # always require story
 
 $(window).bind "clearStory", (ev, $story) ->
-  $content.removeClass(".mid").removeAttr("src")
+  $(window).trigger("clearComments")
+  $content.removeAttr("src")
 
 $(window).bind "clearComments", (ev, $story) ->
-  $comments.removeClass(".mid").removeAttr("src")
+  $comments.removeAttr("src")
 
 ###############################################################################
 # INSTAPAPER
@@ -84,7 +88,6 @@ $("#instapaperLogin").click () ->
 
 $(".readLaterStatus").live "click", (ev) -> 
   $(".pending", readLaterStatus = this).radio()
-  console.log("add", this, $(this).closest(".story"))
   $.getJSON "https://www.instapaper.com/api/add?jsonp=?",
     $("#instapaper").serialize()+
     "&url="+escapeURL($(this).closest(".story").find(".url a").attr("href"))
@@ -111,5 +114,16 @@ $.fn.radioClass = (className) ->
 
 $.exclusive = (cond, $a, $b) -> if cond then $a.radio() else $b.radio()
 $(".toggle span").click () -> $(this).parent().next().slideToggle()
-$.fn.src = (url) -> $(this).attr("src", url) unless $(this).attr("src")==url
+$.fn.src = (url, throttle) -> 
+  namespace = arguments.callee
+  return if ($iframe=$(this)).attr("src")==url
+  throttle = throttle||200
+  now = +new Date
+  clearTimeout(arguments.callee.timer)
+  timeSinceLastReload = +new Date - (namespace.lastReload||0)
+  timeTillReload = Math.max(0,throttle-timeSinceLastReload)
+  namespace.timer = setTimeout( () ->
+    $iframe.attr("src", url)
+    namespace.lastReload = now
+  , timeTillReload)
 escapeURL = (s) -> s.replace(":","%3a").replace(/\//g, "%2f")
