@@ -22,7 +22,7 @@
 @storyIndent: 1em;
 
 @contentTop: 10px;
-@contentPanelHeight: 50px;
+@contentPanelHeight: 100px;
 @contentWidth: 90%;
 @contentDiminishedWidth: 40%;
 
@@ -36,6 +36,12 @@
 h1,h2,h3,h4,h5,h6 { font-weight: normal; font-size: 1em; }
 a,a:visited { color: #00b; text-decoration: none; }
 td { padding: 0 0.2em; }
+
+.error   { color: red; display: none; }
+.success { color: green; display: none; }
+.pending { display: none; }
+.pseudolink, .toggle span { color: #00b; text-decoration: underline; cursor: pointer; }
+.toggle + * { display: none; }
 
 /*****************************************************************************
    PAGE STRUCTURE
@@ -157,8 +163,15 @@ h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-size: 2em; 
   -webkit-box-shadow: 0px 0px 20px #000;
 }
 
-.error   { color: red; display: none; }
-.success { color: green; display: none; }
-.pending { display: none; }
-.toggle span { color: #00b; text-decoration: underline; cursor: pointer; }
-.toggle + form { display: none; }
+/*****************************************************************************
+  CONTENT PANEL
+*****************************************************************************/
+
+.close {
+  position: absolute; top: 0; right: 0;
+  background: #ccc;
+  font-size: 2em;
+  border: 1px solid #aaa;
+  cursor: pointer;
+  -webkit-box-shadow: 0px 0px 5px #000;
+}
