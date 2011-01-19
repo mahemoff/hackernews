@@ -60,19 +60,36 @@
   </div>
 
   <iframe id="content" name="content"></iframe>
+
   <div id="contentPanel">
-    <a data-property="title" data-href="url" target="_blank"></a> <span>read later</span>
-    <div>
-      <div><span data-property="points"></span> points</div>
-      <div><span data-property="commentsCount"></span> comments</div>
-      <a target="_blank" data-href="commentsURL">Read on Hacker News</a>
-      <span>Simplified view <input id="simplified" type="checkbox" /></span>
-    </div>
-    <span id="shortenURLs" class="pseudolink">shorten URLs</span>
-    <div id="tweet" class="toggle"><span>share on twitter</span></div>
-    <div id="twitter"><div id="tweetBox"></div></div>
+
     <div class="close">X</div>
+    <div class="navControls">
+      <div id="simplifiedWrapper"><input id="simplified" type="checkbox" /> simple view</div>
+      <div>
+        <a class="commentsLink commentsOn" target="_blank" data-href="commentsURL"><span data-property="commentCount"></span> comments &raquo;</a>
+        <a class="commentsLink commentsOff" target="_blank" data-href="commentsURL">&laquo; <span data-property="commentCount"></span> comments</a>
+      </div>
+    </div>
+
+    <div class="storyMain">
+
+      <a class="title" data-property="title" data-href="url" target="_blank"></a>
+
+      <div class="postAuxiliary">
+        <span data-property="points"></span> points. <span data-property="postedAgo" class="postedAgo"></span> by <a target="_blank" class="postedBy" data-property="postedBy" data-href="posterURL"></a>.
+        <span>read later</span>
+        <span id="tweet" class="toggle"><span>tweet</span></span>
+        <div id="twitter">
+          <div id="shortenURLs" class="pseudolink">shorten URLs</div>
+          <div id="tweetBox"></div>
+        </div>
+      </div>
+
+    </div>
+
   </div>
+
   <iframe id="comments" name="comments"></iframe>
 
   <!-- POST-PAGE SCRIPTS -->

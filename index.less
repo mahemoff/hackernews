@@ -21,8 +21,8 @@
 @mainIndent: 2%;
 @storyIndent: 1em;
 
-@contentTop: 10px;
-@contentPanelHeight: 100px;
+@contentTop: 0.3em;
+@contentPanelHeight: 4em;
 @contentWidth: 90%;
 @contentDiminishedWidth: 40%;
 
@@ -134,11 +134,13 @@ h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-size: 2em; 
 #content, #contentPanel {
   .fixed(0, 100%, 100%, @contentWidth);
   -webkit-transition: left 0.3s ease-in-out;
-  background: white;
 }
 
-#contentPanel { .fixed(@contentTop, 100%, @contentPanelHeight, @contentWidth); }
+#content { background: white; }
 #content { .fixed(@contentTop+@contentPanelHeight, 100%, 100%, @contentWidth); }
+
+#contentPanel { .linearGradient(#ddd, #fff); }
+#contentPanel { .fixed(@contentTop, 100%, @contentPanelHeight, @contentWidth); }
 
 #content[src^=http], #content[src^=http] + #contentPanel {
   left: 100-@contentWidth;
@@ -167,10 +169,25 @@ h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-size: 2em; 
   CONTENT PANEL
 *****************************************************************************/
 
+.storyMain  {
+
+  padding: 0.4em;
+  .title { font-size: 1.5em; }
+  #twitter { padding: 0.5em; }
+
+}
+
+.navControls { float: right; margin: 0.5em 1em }
+#simplifiedWrapper { margin-bottom: 0.2em; }
+#contentPanel .commentsLink { display: block; }
+#contentPanel .commentsOn { display: none; }
+#twitter { background: #ddd; }
+
 .close {
-  position: absolute; top: 0; right: 0;
+  float: right;
+  margin: 0.3em 0.3em;
   background: #ccc;
-  font-size: 2em;
+  font-size: 1.8em;
   border: 1px solid #aaa;
   cursor: pointer;
   -webkit-box-shadow: 0px 0px 5px #000;

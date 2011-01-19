@@ -45,11 +45,32 @@ $comments = $("#comments")
 
 # RESPOND TO UI EVENTS WITH SEMANTIC EVENTS
 
-$(".story").live "click", (ev) -> $(window).trigger "selectStory", [$(this)]
+$(".story").live "click", (ev) ->
+  console.log "live click"
+  $(window).trigger "selectStory", [$(this)]
+  return false
  
+$("#stories .commentsLink").live "click", (ev) ->
+   $(window).trigger "selectComments", [$(this).closest(".story")]
+   return false
+
+$("#contentPanel .commentsLink").click (ev) ->
+  if $comments.attr("src")?
+    console.log("hazzz")
+    $(window).trigger "closeComments"
+  else
+    $(window).trigger "selectComments", [$(".selected")]
+    console.log("hazzznt")
+  return false
+
+$(window).click (ev) ->
+  console.log "clicked in window"
+  unless $(ev.target).closest("#contentPanel").length
+    $(window).trigger "closeStory"
+
 keyBindings =
   13: () -> # CR
-    ev = if $("#content").attr("src")? then "selectComments" else "selectStory"
+    ev = if $content.attr("src")? then "selectComments" else "selectStory"
     $(window).trigger ev, [$(".selected")]
 
   27: () -> # ESCAPE
@@ -65,10 +86,6 @@ keyBindings =
 $(window).bind "keydown", (ev) ->
   keyBindings[ev.keyCode]($content, $comments) if keyBindings[ev.keyCode]?
 
-$(window).click (ev) ->
-  unless $(ev.target).closest("#contentPanel").length
-    $(window).trigger "closeStory"
-
 # Not handled right now
 # $(window).bind "scroll", () -> $(window).trigger "closeStory"
 
@@ -82,13 +99,19 @@ $(window).bind "selectStory", (ev, $story, ensureComments) ->
     # return
 
   $story.addClass("selected")
+  console.log("story", story)
   if $("#simplified").checked()
-    $content.removeAttr("sandbox").src(story.simpleURL)
+    # $content.removeAttr("sandbox").src(story.simpleURL)
+    $content.removeAttr("sandbox").attr("src", story.simpleURL)
   else
-    $content.attr("sandbox", "sandbox").src(story.url)
+    console.log($content, "set src")
+    # $content.attr("sandbox", "sandbox").src(story.url)
+    $content.attr("sandbox", "sandbox").attr("src", story.url)
+  console.log "SRRC", $content.attr("src"), story.url
   # $content.src story[if $("#simplified").checked() then "simpleURL" else "url"]
   if ensureComments or $comments.attr("src")?
-    $comments.src $(".selected .commentsLink a").attr("href")
+    $(".commentsOn").radio()
+    $comments.attr "src", $(".selected .commentsLink a").attr("href")
 
   $("[data-property]", $contentPanel).each () ->
     $(this).html(story[$(this).attr("data-property")])
@@ -100,10 +123,13 @@ $(window).bind "selectComments", (ev, $story) ->
   $(window).trigger("selectStory", [$story, true]) # always require story
 
 $(window).bind "closeStory", (ev, $story) ->
+  console.log("closeStory")
   $(window).trigger("closeComments")
   $content.removeAttr("src")
 
 $(window).bind "closeComments", (ev, $story) ->
+  console.log("closeComments")
+  $(".commentsOff").radio()
   $comments.removeAttr("src")
 
 $(window).bind "changeSimplified", (ev) ->
@@ -163,6 +189,8 @@ $.fn.radioClass = (className) ->
 $.exclusive = (cond, $a, $b) -> if cond then $a.radio() else $b.radio()
 $(".toggle span").live "click", () -> $(this).parent().next().slideToggle()
 $.fn.src = (url, throttle) -> 
+  $(this).attr("src", url)
+  return
   namespace = arguments.callee
   return if ($iframe=$(this)).attr("src")==url
   throttle = throttle||200
@@ -170,7 +198,9 @@ $.fn.src = (url, throttle) ->
   clearTimeout(arguments.callee.timer)
   timeSinceLastReload = +new Date - (namespace.lastReload||0)
   timeTillReload = Math.max(0,throttle-timeSinceLastReload)
+  console.log("timeTill", timeTillReload)
   namespace.timer = setTimeout( () ->
+    console.log("running")
     $iframe.attr("src", url)
     namespace.lastReload = now
   , timeTillReload)
