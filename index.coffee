@@ -14,6 +14,7 @@ Story = (attribs) ->
   this.posterURL = "http://news.ycombinator.com/item?user=#{attribs.postedBy}"
   this.commentsURL = "http://news.ycombinator.com/item?id=#{attribs.id}"
   this.simpleURL = "http://www.instapaper.com/text?u=#{encode(attribs.url)}"
+  this.url = "http://news.ycombinator.com#{attribs.url}" if not ~attribs.url.search("(http|https):")
   this
 
 show = () ->
