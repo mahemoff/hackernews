@@ -22,6 +22,7 @@ show = () ->
     (storyInfo) ->
       stories = storyInfo.items.map (storyData) -> new Story(storyData)
       $("#stories").fadeOut () ->
+        $("#stories :first-child").empty()
         _(stories).each (story) ->
           $("<tr class='story' />")
           .html(storyTemplate(story))
