@@ -13,7 +13,8 @@ Story = (attribs) ->
     story[attrib] = val
   this.posterURL = "http://news.ycombinator.com/item?user=#{attribs.postedBy}"
   this.commentsURL = "http://news.ycombinator.com/item?id=#{attribs.id}"
-  this.simpleURL = "http://www.instapaper.com/text?u=#{encode(attribs.url)}"
+  this.url = this.commentsURL if not ~attribs.url.search("(http|https):")
+  this.simpleURL = "http://www.instapaper.com/text?u=#{encode(this.url)}"
   this
 
 show = () ->
@@ -21,6 +22,7 @@ show = () ->
     (storyInfo) ->
       stories = storyInfo.items.map (storyData) -> new Story(storyData)
       $("#stories").fadeOut () ->
+        $("#stories :first-child").empty()
         _(stories).each (story) ->
           $("<tr class='story' />")
           .html(storyTemplate(story))
@@ -144,8 +146,11 @@ $("#instapaperLogin").click () ->
   $.getJSON "https://www.instapaper.com/api/authenticate?jsonp=?",
     $("#instapaper").serialize()
     (response) ->
-      $.exclusive response.status==200,
-      $("#instapaper .success"), $("#instapaper .error")
+      if response.status==200
+        $("#instapaper .success").radio()
+        setTimeout (-> $(".toggle span").parent().next().slideToggle()), 1000
+      else
+        $("#instapaper .error").radio()
   return false
 
 $(".readLaterStatus").live "click", (ev) -> 
@@ -154,7 +159,12 @@ $(".readLaterStatus").live "click", (ev) ->
     $("#instapaper").serialize()+
     "&url="+encode($(this).closest(".story").find(".url a").attr("href"))
     (response) ->
-      $(".success", readLaterStatus).radio();
+      if response.status==201
+        $(".success", readLaterStatus).radio()
+      else
+        $(".fresh", readLaterStatus).radio()
+        $("#instapaper .error").radio()
+        $(".toggle span").parent().next().slideToggle()
   return false
 
 ###############################################################################
@@ -186,7 +196,6 @@ $.fn.radio = () -> $(this).show().siblings().hide()
 $.fn.radioClass = (className) ->
   $(this).addClass(className).siblings().removeClass(className)
 
-$.exclusive = (cond, $a, $b) -> if cond then $a.radio() else $b.radio()
 $(".toggle span").live "click", () -> $(this).parent().next().slideToggle()
 $.fn.src = (url, throttle) -> 
   $(this).attr("src", url)
