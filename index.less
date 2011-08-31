@@ -54,17 +54,24 @@ td { padding: 0 0.2em; }
    PAGE STRUCTURE
 *****************************************************************************/
 
+html, body { height: 100%; }
+#container { position: relative; min-height: 100%; }
 body { font-size:100%; }
 #header { line-height: 1.3em; }
 #header { background: #fe761b; margin: 0 0 1em; padding: 1em @mainIndent 0.5em; }
 #header .wrapper { margin-left: @storyIndent; }
 h1 { font-family: Neuton, ariel, helvetica, sans-serif; font-size: 2em; }
 #about { font-size: 0.75em; }
-#main { text-align: center; min-height: 600px; }
+#main { text-align: center; }
 #main > * {
   text-align: left; width: 100%-2*@mainIndent; margin: 0 auto 1em;
+  margin-bottom: 2em;
 }
-#footer { width: 100%-2*@mainIndent; margin: 1em auto; text-align: right; }
+#footer {
+  width: 100%-2*@mainIndent; margin: 1em auto; text-align: right; font-size: small;
+  position: absolute; bottom: 1em;
+  a { text-decoration: underline; }
+}
 
 /*****************************************************************************
    SETTINGS
@@ -88,6 +95,7 @@ h1 { font-family: Neuton, ariel, helvetica, sans-serif; font-size: 2em; }
 #stories {
   background: #f6f6ef;
   border-collapse: collapse;
+  margin-bottom: 3em;
 }
 
 .story { 
@@ -108,15 +116,13 @@ h1 { font-family: Neuton, ariel, helvetica, sans-serif; font-size: 2em; }
     white-space: pre;
     color: #666;
 
-    span {
-      border-radius: 0.3em;
-    }
+    &:hover span { border-bottom: 1px dotted black; cursor: pointer; }
 
   }
 
   .postedAgo { font-size: 0.75em; white-space: pre; }
 
-  .url a:hover, .postedBy:hover, .commentsLink:hover span { text-decoration: underline; }
+  /* .url a:hover, .postedBy:hover, .commentsLink:hover span { text-decoration: underline; } */
 
 }
 
