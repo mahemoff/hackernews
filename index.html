@@ -2,14 +2,14 @@
 <html>
 <head>
 
-  <link href='http://fonts.googleapis.com/css?family=Josefin+Sans'
+  <link href='http://fonts.googleapis.com/css?family=Neuton'
         rel='stylesheet' type='text/css'>
-  <link rel="shortcut icon" href="images/h.jpg" />
-  <link rel="apple-itouch-icon" href="images/h114.jpg" />
+  <link rel="shortcut icon" href="http://faviconist.com/icons/b0dbefb1435ce7f26841d580cc4fb4d6/favicon.ico" />
+  <link rel="apple-itouch-icon" href="images/h114.png" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
 
-  <link rel="stylesheet/less" href="index.less" type="text/css" />
+  <link rel="stylesheet/less" href="index.less?1" type="text/css" />
   <script src="lib/less-1.0.40.js"></script>
 </head>
 
@@ -20,13 +20,13 @@
       <h1>Hacker News Reader</h1>
       <div id="about">
         <span>
-          Experimental serverless app on
+          A serverless app on
+            <a href="http://news.ycombinator.com">Hacker News</a>,
             <a href="http://jashkenas.github.com/coffee-script/">CoffeeScript</a>,
             <a href="https://github.com/cloudhead/less.js/">Less</a>,
             <a href="http://jquery.com">jQuery</a>,
             <a href="http://api.ihackernews.com/">iHackerNews API</a>,
-            <a href="http://news.ycombinator.com">HN</a>,
-            <a href="http://mahemoff.com">Me</a>
+            <a href="http://faviconist.com">Faviconist</a>.<br/>
         </span>
       </div>
     </div>
@@ -35,11 +35,19 @@
   <div id="main">
 
     <div id="settings">
-      <h2 class="toggle"><span>settings</span></h2>
+      <h2 class="toggle">
+        <span>settings</span>
+        <div class='nav'>
+          <span class='reload page'>front</span>
+          <span class='reload new'>new</span>
+          <span class='reload ask'>ask</span>
+        </div>
+      </h2>
       <form id="instapaper">
         <input placeholder="joe@example.com" name="username" />
         <input placeholder="password" name="password" type="password" />
         <button id="instapaperLogin">Login to Instapaper</button>
+        save locally? <input class='saveSettings' type="checkbox"></input>
         <span class="loginStatus">
           <div class="pending">  
             logging in ...
@@ -55,8 +63,22 @@
       </form>
     </div>
 
-    <table id="stories"></table>
+    <table id="stories">
+      <tr><td>Loading from <a href="http://news.ycombinator.com">Hacker News</a> ... <span class='timedout'>think it timed out :(</td></tr>
+      <tr><td class='timedout'>
+        <p><span class="reload page">Try again</span>
+        or switch to <a href='http://news.ycombinator.com'>the original HN website</a></p>
+      </td></tr>
+    </table>
 
+  </div>
+
+  <div id="footer">
+    By
+    <a href="http://mahemoff.com">Mahemoff</a>
+    with help from
+    <a href="http://paul.kinlan.com">Paul</a>,
+    <a href="https://twitter.com/rcknr">Sergii</a>.
   </div>
 
   <iframe id="content" name="content"></iframe>
@@ -95,8 +117,9 @@
   <!-- POST-PAGE SCRIPTS -->
 
   <script src="lib/jquery.min.js"></script>
+  <script src="lib/jquery.deserialize.js"></script>
   <script src="lib/underscore.js"></script>
-  <script type="text/coffeescript" src="index.coffee"></script>
+  <script type="text/coffeescript" src="index.coffee?1"></script>
   <script src="lib/coffee-script.js"></script>
   <script src="http://platform.twitter.com/anywhere.js?id=HQdhAp7xaImuZvaV1WaCtg&v=1" type="text/javascript"></script>
 
@@ -118,6 +141,20 @@
   </script>
 
   <script id="contentPanelTemplate" type="template">
+  </script>
+
+  <script type="text/javascript">
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-25447992-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
   </script>
 
 </body>

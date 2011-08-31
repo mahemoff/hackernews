@@ -1,4 +1,36 @@
-# todo return false -> ev.preventDefault()
+
+###############################################################################
+# GENERIC
+###############################################################################
+
+$.fn.radio = () -> $(this).show().siblings().hide()
+$.fn.radioClass = (className) ->
+  $(this).addClass(className).siblings().removeClass(className)
+
+$(".toggle span").live "click", () -> $(this).parent().next().slideToggle()
+$.fn.src = (url, throttle) -> 
+  $(this).attr("src", url)
+  return
+  namespace = arguments.callee
+  return if ($iframe=$(this)).attr("src")==url
+  throttle = throttle||200
+  now = +new Date
+  clearTimeout(arguments.callee.timer)
+  timeSinceLastReload = +new Date - (namespace.lastReload||0)
+  timeTillReload = Math.max(0,throttle-timeSinceLastReload)
+  namespace.timer = setTimeout( () ->
+    $iframe.attr("src", url)
+    namespace.lastReload = now
+  , timeTillReload)
+  return $iframe
+encode = (s) -> s.replace(":","%3a").replace(/\//g, "%2f")
+delay = (ms, func) -> setTimeout func, ms
+
+$.fn.checked = () -> $(this).attr("checked")
+
+###############################################################################
+# TEMPLATES
+###############################################################################
 
 storyTemplate = _.template $("#storyTemplate").html()
 contentPanelTemplate = _.template($("#contentPanelTemplate").html())
@@ -17,8 +49,15 @@ Story = (attribs) ->
   this.simpleURL = "http://www.instapaper.com/text?u=#{encode(this.url)}"
   this
 
-show = () ->
-  $.getJSON "http://api.ihackernews.com/page?format=jsonp&callback=?",
+# content can be "page", "ask", or "new"
+update = (content) ->
+
+  $('.timedout').hide()
+  delay 10000, -> $('.timedout').show()
+
+  content ||= 'page'
+  console.log "CONTENT #{content}"
+  $.getJSON "http://api.ihackernews.com/#{content}?format=jsonp&callback=?",
     (storyInfo) ->
       stories = storyInfo.items.map (storyData) -> new Story(storyData)
       $("#stories").fadeOut () ->
@@ -34,8 +73,12 @@ $(".url").live "click", (ev) ->
   $(window).trigger "selectStory", [$(this).closest(".story")]
   ev.preventDefault()
 
-show()
-setInterval show, 10*60*1000
+$('.page').click () -> update 'page'
+$('.new').click  () -> update 'new'
+$('.ask').click  () -> update 'ask'
+
+update()
+setInterval update, 10*60*1000
 
 ###############################################################################
 # SHOW CONTENT AND COMMENTS
@@ -48,7 +91,6 @@ $comments = $("#comments")
 # RESPOND TO UI EVENTS WITH SEMANTIC EVENTS
 
 $(".story").live "click", (ev) ->
-  console.log "live click"
   $(window).trigger "selectStory", [$(this)]
   return false
  
@@ -58,15 +100,12 @@ $("#stories .commentsLink").live "click", (ev) ->
 
 $("#contentPanel .commentsLink").click (ev) ->
   if $comments.attr("src")?
-    console.log("hazzz")
     $(window).trigger "closeComments"
   else
     $(window).trigger "selectComments", [$(".selected")]
-    console.log("hazzznt")
   return false
 
 $(window).click (ev) ->
-  console.log "clicked in window"
   unless $(ev.target).closest("#contentPanel").length
     $(window).trigger "closeStory"
 
@@ -101,15 +140,12 @@ $(window).bind "selectStory", (ev, $story, ensureComments) ->
     # return
 
   $story.addClass("selected")
-  console.log("story", story)
   if $("#simplified").checked()
     # $content.removeAttr("sandbox").src(story.simpleURL)
     $content.removeAttr("sandbox").attr("src", story.simpleURL)
   else
-    console.log($content, "set src")
     # $content.attr("sandbox", "sandbox").src(story.url)
     $content.attr("sandbox", "sandbox").attr("src", story.url)
-  console.log "SRRC", $content.attr("src"), story.url
   # $content.src story[if $("#simplified").checked() then "simpleURL" else "url"]
   if ensureComments or $comments.attr("src")?
     $(".commentsOn").radio()
@@ -125,12 +161,10 @@ $(window).bind "selectComments", (ev, $story) ->
   $(window).trigger("selectStory", [$story, true]) # always require story
 
 $(window).bind "closeStory", (ev, $story) ->
-  console.log("closeStory")
   $(window).trigger("closeComments")
   $content.removeAttr("src")
 
 $(window).bind "closeComments", (ev, $story) ->
-  console.log("closeComments")
   $(".commentsOff").radio()
   $comments.removeAttr("src")
 
@@ -141,12 +175,21 @@ $(window).bind "changeSimplified", (ev) ->
 # INSTAPAPER
 ###############################################################################
 
+$("#instapaper").deserialize localStorage.instaParams if localStorage.instaParams
+$(".saveSettings").click ->
+  if this.checked
+    wanted = confirm('This will save your details locally! Anyone with access to this computer/account (and a modicum of savvy) will be able to determine your Instapaper username and password.')
+    if not wanted
+      this.checked = null
+      delete localStorage.instaParams
+
 $("#instapaperLogin").click () ->
   $("#instapaper .pending").show();
-  $.getJSON "https://www.instapaper.com/api/authenticate?jsonp=?",
-    $("#instapaper").serialize()
+  instaParams = $("#instapaper").serialize()
+  $.getJSON "https://www.instapaper.com/api/authenticate?jsonp=?", instaParams,
     (response) ->
       if response.status==200
+        localStorage.instaParams = instaParams if $(".saveSettings").is(":checked") 
         $("#instapaper .success").radio()
         setTimeout (-> $(".toggle span").parent().next().slideToggle()), 1000
       else
@@ -188,32 +231,3 @@ $("#shortenURLs").click () ->
 
 tweet = () -> $("#tweetBox iframe").contents().eq(0).find("textarea")
 
-###############################################################################
-# GENERIC
-###############################################################################
-
-$.fn.radio = () -> $(this).show().siblings().hide()
-$.fn.radioClass = (className) ->
-  $(this).addClass(className).siblings().removeClass(className)
-
-$(".toggle span").live "click", () -> $(this).parent().next().slideToggle()
-$.fn.src = (url, throttle) -> 
-  $(this).attr("src", url)
-  return
-  namespace = arguments.callee
-  return if ($iframe=$(this)).attr("src")==url
-  throttle = throttle||200
-  now = +new Date
-  clearTimeout(arguments.callee.timer)
-  timeSinceLastReload = +new Date - (namespace.lastReload||0)
-  timeTillReload = Math.max(0,throttle-timeSinceLastReload)
-  console.log("timeTill", timeTillReload)
-  namespace.timer = setTimeout( () ->
-    console.log("running")
-    $iframe.attr("src", url)
-    namespace.lastReload = now
-  , timeTillReload)
-  return $iframe
-encode = (s) -> s.replace(":","%3a").replace(/\//g, "%2f")
-
-$.fn.checked = () -> $(this).attr("checked")

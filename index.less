@@ -44,6 +44,13 @@ td { padding: 0 0.2em; }
 .toggle + * { display: none; }
 
 /*****************************************************************************
+   GENERAL CONTROLS
+*****************************************************************************/
+
+.reload { background: #f9b; width: 3em; padding: 0.2em 0.6em; border-radius: 0.5em;
+          text-decoration: none; cursor: pointer; }
+
+/*****************************************************************************
    PAGE STRUCTURE
 *****************************************************************************/
 
@@ -51,12 +58,13 @@ body { font-size:100%; }
 #header { line-height: 1.3em; }
 #header { background: #fe761b; margin: 0 0 1em; padding: 1em @mainIndent 0.5em; }
 #header .wrapper { margin-left: @storyIndent; }
-h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-size: 2em; }
+h1 { font-family: Neuton, ariel, helvetica, sans-serif; font-size: 2em; }
 #about { font-size: 0.75em; }
-#main { text-align: center; }
+#main { text-align: center; min-height: 600px; }
 #main > * {
   text-align: left; width: 100%-2*@mainIndent; margin: 0 auto 1em;
 }
+#footer { width: 100%-2*@mainIndent; margin: 1em auto; text-align: right; }
 
 /*****************************************************************************
    SETTINGS
@@ -65,10 +73,17 @@ h1 { font-family: "Josefin Sans", ariel, helvetica, sans-serif; font-size: 2em; 
 #settings { padding-left: @storyIndent; }
 #settings input { width: 10em; }
 #settings button { padding: 0 1em; }
+#settings .nav { margin-right: 2em; float: right; display: none; } /* disabled as API not responding */
 
 /*****************************************************************************
    STORIES
 *****************************************************************************/
+
+#stories .timedout {
+  display: none; padding-top: 1em;
+  p { margin-top: 0.5em; }
+  a { text-decoration: underline; }
+}
 
 #stories {
   background: #f6f6ef;
