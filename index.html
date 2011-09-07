@@ -10,6 +10,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
 
   <link rel="stylesheet/less" href="index.less?1" type="text/css" />
+  <script src="lib/date.js"></script>
   <script src="lib/less-1.0.40.js"></script>
 </head>
 
@@ -27,7 +28,6 @@
               <a href="http://jashkenas.github.com/coffee-script/">CoffeeScript</a>,
               <a href="https://github.com/cloudhead/less.js/">Less</a>,
               <a href="http://jquery.com">jQuery</a>,
-              <a href="http://api.ihackernews.com/">iHackerNews API</a>,
               <a href="http://faviconist.com">Faviconist</a>.<br/>
           </span>
         </div>
@@ -96,8 +96,8 @@
     <div class="navControls">
       <div id="simplifiedWrapper"><input id="simplified" type="checkbox" /> simple view</div>
       <div>
-        <a class="commentsLink commentsOn" target="_blank" data-href="commentsURL"><span data-property="commentCount"></span> comments &raquo;</a>
-        <a class="commentsLink commentsOff" target="_blank" data-href="commentsURL">&laquo; <span data-property="commentCount"></span> comments</a>
+        <a class="commentsLink commentsOn" target="_blank" data-href="commentsURL"><span data-property="num_comments"></span> comments &raquo;</a>
+        <a class="commentsLink commentsOff" target="_blank" data-href="commentsURL">&laquo; <span data-property="num_comments"></span> comments</a>
       </div>
     </div>
 
@@ -106,7 +106,7 @@
       <a class="title" data-property="title" data-href="url" target="_blank"></a>
 
       <div class="postAuxiliary">
-        <span data-property="points"></span> points. <span data-property="postedAgo" class="postedAgo"></span> by <a target="_blank" class="postedBy" data-property="postedBy" data-href="posterURL"></a>.
+        <span data-property="points"></span> points. <span data-property="postedAgo" class="postedAgo"></span> by <a target="_blank" class="postedBy" data-property="username" data-href="posterURL"></a>.
         <span>read later</span>
         <span id="tweet" class="toggle"><span>tweet</span></span>
         <div id="twitter">
@@ -133,11 +133,11 @@
   <script id="storyTemplate" type="template">
         <td class="url">
           <a target="_blank" href="<%= url %>" style="font-size:<%= Math.log(Math.log(Math.max(points,10))) %>em;" ><%= title %></a>
-          <span class="postAuxiliary"><span class="postedAgo"><%= postedAgo %> by <a target="_blank" class="postedBy" href="<%= posterURL %>"><%= postedBy %></a></span>
+          <span class="postAuxiliary"><span class="postedAgo"><%= postedAgo %> by <a target="_blank" class="postedBy" href="<%= posterURL %>"><%= username %></a></span>
         </td>
 
         <td class="commentsLink">
-          <a target="_blank" href="<%= commentsURL %>"><span><%= commentCount %> comments</span></a>
+          <a target="_blank" href="<%= commentsURL %>"><span><%= num_comments %> comments</span></a>
         </td>
 
         <td class="readLaterStatus">

@@ -43,10 +43,11 @@ Story = (attribs) ->
   story = this
   _(attribs).each (val, attrib) ->
     story[attrib] = val
-  this.posterURL = "http://news.ycombinator.com/user?id=#{attribs.postedBy}"
+  this.posterURL = "http://news.ycombinator.com/user?id=#{attribs.username}"
   this.commentsURL = "http://news.ycombinator.com/item?id=#{attribs.id}"
-  this.url = this.commentsURL if not ~attribs.url.search("(http|https):")
+  this.url = this.commentsURL if not attribs.url?
   this.simpleURL = "http://www.instapaper.com/text?u=#{encode(this.url)}"
+  this.postedAgo = Date.fromISO8601(this.create_ts).timeago()
   this
 
 # content can be "page", "ask", or "new"
@@ -55,10 +56,9 @@ update = (content) ->
   $('.timedout').hide()
   delay 5000, -> $('.timedout').show()
 
-  content ||= 'page'
-  $.getJSON "http://api.ihackernews.com/#{content}?format=jsonp&callback=?",
+  $.getJSON 'http://api.thriftdb.com/api.hnsearch.com/items/_search?limit=30&sortby=product(points,pow(2,div(div(ms(create_ts,NOW),3600000),6)))%20desc&pretty_print=true&callback=?',
     (storyInfo) ->
-      stories = storyInfo.items.map (storyData) -> new Story(storyData)
+      stories = storyInfo.results.map (storyData) -> new Story(storyData.item)
       $("#stories").fadeOut () ->
         $("#stories :first-child").empty()
         _(stories).each (story) ->
