@@ -83,7 +83,6 @@ update = () ->
     stories = res.feed.entries.map (entry) -> new Story(entry)
     # stories = stories.sort (s1,s2) -> s1.created < s2.created
     stories.sort (s1,s2) -> s2.created - s1.created
-    console.log 'stories', stories
     $("#stories").empty().hide()
     _(stories).each (story, i) ->
       story.prerender = !updateCount and i<3 #pre-render first 3 stories on first paint
@@ -219,9 +218,9 @@ loginToInstapaper = (success, error) ->
   $.getJSON "https://www.instapaper.com/api/authenticate?jsonp=?", $("#instapaper").serialize(), (response) ->
     if response.status==200
       $('html').addClass 'instapaperActive'
-      success()
+      success() if success
     else
-      error()
+      error() if error
 
 if localStorage.instaParams
   $("#instapaper").deserialize localStorage.instaParams
@@ -234,14 +233,13 @@ $(".saveSettings").click ->
       this.checked = null
       delete localStorage.instaParams
 
-$("#instapaperLogin").click () ->
+$("#instapaperogin").click () ->
   $("#instapaper .pending").show();
   loginToInstapaper ->
     localStorage.instaParams = $("#instapaper").serialize() if $(".saveSettings").is(":checked") 
     $("#instapaper .success").radio()
     setTimeout (-> $(".toggle span").parent().next().slideToggle()), 1000
   , ->
-    console.log 'error'
     $("#instapaper .error").radio()
   false
 
