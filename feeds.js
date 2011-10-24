@@ -1,4 +1,5 @@
 google.load('feeds', '1')
 google.setOnLoadCallback(function() {
-  window.init();
+  if (window.init) return window.init();
+  setTimeout(arguments.callee, 500);
 });
