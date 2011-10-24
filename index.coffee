@@ -75,7 +75,7 @@ Story = (entry) ->
 # content can be "page", "ask", or "new"
 updateCount = 0
 update = () ->
-  feed = new google.feeds.Feed 'http://www.hnsearch.com/rss'
+  feed = new google.feeds.Feed "http://www.hnsearch.com/rss?nocache=#{Math.round 1e9*Math.random()}"
   feed.setResultFormat google.feeds.Feed.MIXED_FORMAT
   feed.setNumEntries 30
   feed.load (res) ->
