@@ -58,21 +58,7 @@ Story = (entry) ->
     postedAgo: Date.fromISO8601(entry.attr 'create_ts').timeago()
     simpleURL: "http://www.instapaper.com/text?u=#{encode(entry.attr 'link')}"
   this
-###
-  window.entry = entry
-  story.url = entry.link
-  story.commentsURL = entry
-  ## story.author = 
-  _(attribs).each (val, attrib) -> story[attrib] = val
-  story.url = story.link
-  story.posterURL = "http://news.ycombinator.com/user?id=#{attribs.username}"
-  story.commentsURL = "http://news.ycombinator.com/item?id=#{attribs.id}"
-  story.url = this.commentsURL if not attribs.url?
-  story.simpleURL = "http://www.instapaper.com/text?u=#{encode(story.url)}"
-  story.postedAgo = (new Date.fromISO8601(story.create_ts)).timeago()
-###
 
-# content can be "page", "ask", or "new"
 updateCount = 0
 update = () ->
   feed = new google.feeds.Feed "http://www.hnsearch.com/rss?nocache=#{Math.round 1e9*Math.random()}"
@@ -81,7 +67,6 @@ update = () ->
   feed.load (res) ->
     return if res.error
     stories = res.feed.entries.map (entry) -> new Story(entry)
-    # stories = stories.sort (s1,s2) -> s1.created < s2.created
     stories.sort (s1,s2) -> s2.created - s1.created
     $("#stories").empty().hide()
     _(stories).each (story, i) ->
@@ -92,16 +77,6 @@ update = () ->
       .appendTo($("#stories"))
     $('#stories').fadeIn 'slow'
     updateCount++
-
-  # $.getJSON 'http://api.thriftdb.com/api.hnsearch.com/items/_search?limit=30&sortby=product(points,pow(2,div(div(ms(create_ts,NOW),3600000),3)))%20desc&pretty_print=true&callback=?',
-  # search='http://api.thriftdb.com/api.hnsearch.com/items/_search?limit=90&sortby=product(points,pow(2,div(div(ms(create_ts,NOW),3600000),0.2))%20desc&pretty_print=true&callback=?'
-  # $.getJSON search, (storyInfo) ->
-  ###
-  feed = new google.feeds.Feed 'http://news.ycombinator.com/rss'
-  feed.setResultFormat google.feeds.Feed.MIXED_FORMAT
-  feed.setNumEntries 10
-  feed.load (result) ->
-  ###
 
 $(".url").live "click", (ev) ->
   $(window).trigger "selectStory", [$(this).closest(".story")]
