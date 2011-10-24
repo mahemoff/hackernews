@@ -52,6 +52,7 @@
           <button id="instapaperLogin">Login to Instapaper</button>
           save locally? <input class='saveSettings' type="checkbox"></input>
           <span class="loginStatus">
+            <div class="notAttempted">&nbsp;</div>
             <div class="pending">  
               logging in ...
             </div>
@@ -67,11 +68,7 @@
       </div>
 
       <table id="stories">
-        <tr><td>Loading from <a href="http://news.ycombinator.com">Hacker News</a> ... <span class='timedout'>think it timed out :(</td></tr>
-        <tr><td class='timedout'>
-          <p><span class="reload page">Try again</span>
-          or switch to <a href='http://news.ycombinator.com'>the original HN website</a></p>
-        </td></tr>
+        <tr><td>Loading from <a href="http://news.ycombinator.com">Hacker News</a></tr>
       </table>
 
       &nbsp; <!-- footer margin -->
@@ -127,14 +124,17 @@
   <script src="lib/jquery.min.js"></script>
   <script src="lib/jquery.deserialize.js"></script>
   <script src="lib/underscore.js"></script>
-  <script type="text/coffeescript" src="index.coffee?1"></script>
+  <script type="text/javascript" src="https://www.google.com/jsapi?key=ABQIAAAA-Yc3YkbYn3cWVyvp2ZEppxQOP8Twd9aiAyStBk9b_9fnX7V4FhTVon-wNo-xuKTOnq0I5POQwhl4pg
+  "></script>
+  <script src="feeds.js"></script>
+  <script src="index.coffee" type="text/coffeescript"></script>
   <script src="lib/coffee-script.js"></script>
   <script src="http://platform.twitter.com/anywhere.js?id=HQdhAp7xaImuZvaV1WaCtg&v=1" type="text/javascript"></script>
 
   <script id="storyTemplate" type="template">
         <td class="url">
-          <a target="_blank" href="<%= url %>" style="font-size:<%= Math.log(Math.log(Math.max(points,10))) %>em;" ><%= title %></a>
-          <span class="postAuxiliary"><span class="postedAgo"><%= postedAgo %> by <a target="_blank" class="postedBy" href="<%= posterURL %>"><%= username %></a></span>
+        <a <%= prerender ? 'rel="prerender"' : '' %> class='title' target="_blank" href="<%= url %>"><%= title %></a>
+        <span class="postAuxiliary"><span class="postedAgo"><%= postedAgo %> by <a target="_blank" class="postedBy" href="<%= posterURL %>"><%= username %></a></span> <span class='points'><%= points %> points</span>
         </td>
 
         <td class="commentsLink">

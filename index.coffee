@@ -39,45 +39,88 @@ contentPanelTemplate = _.template($("#contentPanelTemplate").html())
 # LOAD STORIES
 ###############################################################################
 
-Story = (attribs) ->
-  story = this
-  _(attribs).each (val, attrib) ->
-    story[attrib] = val
-  this.posterURL = "http://news.ycombinator.com/user?id=#{attribs.username}"
-  this.commentsURL = "http://news.ycombinator.com/item?id=#{attribs.id}"
-  this.url = this.commentsURL if not attribs.url?
-  this.simpleURL = "http://www.instapaper.com/text?u=#{encode(this.url)}"
-  this.postedAgo = Date.fromISO8601(this.create_ts).timeago()
+Object.prototype.attr = (name) ->
+  try
+    return this.xmlNode.getElementsByTagName(name)[0].firstChild.textContent
+  catch e
+    return '-'
+
+Story = (entry) ->
+  story = _(this).extend
+    title: entry.attr 'title'
+    url: entry.attr 'link'
+    points: entry.attr 'points'
+    username: entry.attr 'username'
+    num_comments: entry.attr 'num_comments'
+    commentsURL: entry.attr 'comments'
+    created: Date.fromISO8601(entry.attr('create_ts')).getTime()
+    posterURL: "http://news.ycombinator.com/user?id=#{entry.attr 'username'}"
+    postedAgo: Date.fromISO8601(entry.attr 'create_ts').timeago()
+    simpleURL: "http://www.instapaper.com/text?u=#{encode(entry.attr 'link')}"
   this
+###
+  window.entry = entry
+  story.url = entry.link
+  story.commentsURL = entry
+  ## story.author = 
+  _(attribs).each (val, attrib) -> story[attrib] = val
+  story.url = story.link
+  story.posterURL = "http://news.ycombinator.com/user?id=#{attribs.username}"
+  story.commentsURL = "http://news.ycombinator.com/item?id=#{attribs.id}"
+  story.url = this.commentsURL if not attribs.url?
+  story.simpleURL = "http://www.instapaper.com/text?u=#{encode(story.url)}"
+  story.postedAgo = (new Date.fromISO8601(story.create_ts)).timeago()
+###
 
 # content can be "page", "ask", or "new"
-update = (content) ->
+updateCount = 0
+update = () ->
+  feed = new google.feeds.Feed 'http://www.hnsearch.com/rss'
+  feed.setResultFormat google.feeds.Feed.MIXED_FORMAT
+  feed.setNumEntries 30
+  feed.load (res) ->
+    return if res.error
+    stories = res.feed.entries.map (entry) -> new Story(entry)
+    # stories = stories.sort (s1,s2) -> s1.created < s2.created
+    stories.sort (s1,s2) -> s2.created - s1.created
+    console.log 'stories', stories
+    $("#stories").empty().hide()
+    _(stories).each (story, i) ->
+      story.prerender = !updateCount and i<3 #pre-render first 3 stories on first paint
+      $("<tr class='story' />")
+      .html(storyTemplate(story))
+      .data("story", story)
+      .appendTo($("#stories"))
+    $('#stories').fadeIn 'slow'
+    updateCount++
 
-  $('.timedout').hide()
-  delay 5000, -> $('.timedout').show()
-
-  $.getJSON 'http://api.thriftdb.com/api.hnsearch.com/items/_search?limit=30&sortby=product(points,pow(2,div(div(ms(create_ts,NOW),3600000),6)))%20desc&pretty_print=true&callback=?',
-    (storyInfo) ->
-      stories = storyInfo.results.map (storyData) -> new Story(storyData.item)
-      $("#stories").fadeOut () ->
-        $("#stories :first-child").empty()
-        _(stories).each (story) ->
-          $("<tr class='story' />")
-          .html(storyTemplate(story))
-          .data("story", story)
-          .appendTo($("#stories"))
-        $(this).fadeIn()
+  # $.getJSON 'http://api.thriftdb.com/api.hnsearch.com/items/_search?limit=30&sortby=product(points,pow(2,div(div(ms(create_ts,NOW),3600000),3)))%20desc&pretty_print=true&callback=?',
+  # search='http://api.thriftdb.com/api.hnsearch.com/items/_search?limit=90&sortby=product(points,pow(2,div(div(ms(create_ts,NOW),3600000),0.2))%20desc&pretty_print=true&callback=?'
+  # $.getJSON search, (storyInfo) ->
+  ###
+  feed = new google.feeds.Feed 'http://news.ycombinator.com/rss'
+  feed.setResultFormat google.feeds.Feed.MIXED_FORMAT
+  feed.setNumEntries 10
+  feed.load (result) ->
+  ###
 
 $(".url").live "click", (ev) ->
   $(window).trigger "selectStory", [$(this).closest(".story")]
   ev.preventDefault()
 
+###
 $('.page').click () -> update 'page'
 $('.new').click  () -> update 'new'
 $('.ask').click  () -> update 'ask'
+###
 
-update()
-setInterval update, 10*60*1000
+###############################################################################
+# INIT
+###############################################################################
+
+window.init = () ->
+  update()
+  setTimeout update, 10*60*1000
 
 ###############################################################################
 # SHOW CONTENT AND COMMENTS
@@ -140,11 +183,9 @@ $(window).bind "selectStory", (ev, $story, ensureComments) ->
 
   $story.addClass("selected")
   if $("#simplified").checked()
-    # $content.removeAttr("sandbox").src(story.simpleURL)
-    $content.removeAttr("sandbox").attr("src", story.simpleURL)
+    $content.attr("src", story.simpleURL)
   else
-    # $content.attr("sandbox", "sandbox").src(story.url)
-    $content.attr("sandbox", "sandbox").attr("src", story.url)
+    $content.attr("src", story.url)
   # $content.src story[if $("#simplified").checked() then "simpleURL" else "url"]
   if ensureComments or $comments.attr("src")?
     $(".commentsOn").radio()
@@ -174,26 +215,35 @@ $(window).bind "changeSimplified", (ev) ->
 # INSTAPAPER
 ###############################################################################
 
-$("#instapaper").deserialize localStorage.instaParams if localStorage.instaParams
+loginToInstapaper = (success, error) ->
+  $.getJSON "https://www.instapaper.com/api/authenticate?jsonp=?", $("#instapaper").serialize(), (response) ->
+    if response.status==200
+      $('html').addClass 'instapaperActive'
+      success()
+    else
+      error()
+
+if localStorage.instaParams
+  $("#instapaper").deserialize localStorage.instaParams
+  loginToInstapaper()
+
 $(".saveSettings").click ->
   if this.checked
-    wanted = confirm('This will save your details locally! Anyone with access to this computer/account (and a modicum of savvy) will be able to determine your Instapaper username and password.')
+    wanted = confirm('This will save your name and password in plain-text on your machine (Instapaper API requires it work this way). Please, only do this if you are using your own machine!')
     if not wanted
       this.checked = null
       delete localStorage.instaParams
 
 $("#instapaperLogin").click () ->
   $("#instapaper .pending").show();
-  instaParams = $("#instapaper").serialize()
-  $.getJSON "https://www.instapaper.com/api/authenticate?jsonp=?", instaParams,
-    (response) ->
-      if response.status==200
-        localStorage.instaParams = instaParams if $(".saveSettings").is(":checked") 
-        $("#instapaper .success").radio()
-        setTimeout (-> $(".toggle span").parent().next().slideToggle()), 1000
-      else
-        $("#instapaper .error").radio()
-  return false
+  loginToInstapaper ->
+    localStorage.instaParams = $("#instapaper").serialize() if $(".saveSettings").is(":checked") 
+    $("#instapaper .success").radio()
+    setTimeout (-> $(".toggle span").parent().next().slideToggle()), 1000
+  , ->
+    console.log 'error'
+    $("#instapaper .error").radio()
+  false
 
 $(".readLaterStatus").live "click", (ev) -> 
   $(".pending", readLaterStatus = this).radio()
